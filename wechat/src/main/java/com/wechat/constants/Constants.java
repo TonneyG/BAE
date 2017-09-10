@@ -24,4 +24,9 @@ public class Constants {
 	public static String RESP_VIDEO_MESSAGE = "vodeo";
 	public static String RESP_MUSIC_MESSAGE = "music";
 	public static String RESP_NEWS_MESSAGE = "news";
+	
+	//获取access_token地址
+	public static String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+	//媒体上传地址
+	public static String UPLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
 }
