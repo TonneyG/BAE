@@ -1,8 +1,18 @@
 package com.wechat.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
+import com.wechat.constants.Constants;
+
+import net.sf.json.JSONObject;
 
 /**
  * @author gkl
@@ -10,6 +20,8 @@ import java.util.Arrays;
  */
 public class SignUtil {
 	private static String token = "gkl";
+	private static String APPID = "wx3a75093b38b272f7";
+	private static String APPSECRET = "3b6366b1586986d06776516775a8e18b";
 	
 	/**
 	 * 校验签名
@@ -47,5 +59,29 @@ public class SignUtil {
 		tempArr[1] = Digit[mByte & 0X0F];
 		String s = new String(tempArr);
 		return s;
+	}
+	
+	public static String getAccessToken(){
+		try {
+			String requestUrl = Constants.ACCESS_TOKEN_URL.replace("APPID", APPID).replace("APPSECRET", APPSECRET);
+			URL url = new URL(requestUrl);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoInput(true);
+			conn.setRequestMethod("GET");
+			InputStream inputStream = conn.getInputStream();
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+			BufferedReader reader = new BufferedReader(inputStreamReader);
+			StringBuffer sb = new StringBuffer();
+			String str = "";
+			while((str=reader.readLine()) != null){
+				sb.append(str);
+			}
+			JSONObject json = JSONObject.fromObject(sb.toString());
+			String accessToken = (String) json.get("access_token");
+			return accessToken;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

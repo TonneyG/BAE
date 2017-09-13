@@ -57,4 +57,5 @@ public class CoreService {
 		}
 		return respXml;
 	}
+	
 }

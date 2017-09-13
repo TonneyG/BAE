@@ -10,11 +10,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.wechat.constants.Constants;
+import com.wechat.menu.Button;
+import com.wechat.menu.ClickButton;
+import com.wechat.menu.ComplexButton;
+import com.wechat.menu.Menu;
+import com.wechat.menu.ViewButton;
 import com.wechat.service.CoreService;
 import com.wechat.util.MessageUtil;
 import com.wechat.util.SignUtil;
 
+import net.sf.json.JSONObject;
+
 public class CoreServlet extends HttpServlet{
+	/**
+	 * 容器初始化
+	 */
+	@Override
+	public void init() throws ServletException {
+	}
+	
 	/**
 	 * 请求校验
 	 */
@@ -51,4 +65,5 @@ public class CoreServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
+	
 }
