@@ -20,8 +20,6 @@ import net.sf.json.JSONObject;
  */
 public class SignUtil {
 	private static String token = "gkl";
-	private static String APPID = "wx3a75093b38b272f7";
-	private static String APPSECRET = "3b6366b1586986d06776516775a8e18b";
 	
 	/**
 	 * 校验签名
@@ -61,27 +59,4 @@ public class SignUtil {
 		return s;
 	}
 	
-	public static String getAccessToken(){
-		try {
-			String requestUrl = Constants.ACCESS_TOKEN_URL.replace("APPID", APPID).replace("APPSECRET", APPSECRET);
-			URL url = new URL(requestUrl);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoInput(true);
-			conn.setRequestMethod("GET");
-			InputStream inputStream = conn.getInputStream();
-			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-			BufferedReader reader = new BufferedReader(inputStreamReader);
-			StringBuffer sb = new StringBuffer();
-			String str = "";
-			while((str=reader.readLine()) != null){
-				sb.append(str);
-			}
-			JSONObject json = JSONObject.fromObject(sb.toString());
-			String accessToken = (String) json.get("access_token");
-			return accessToken;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
 }

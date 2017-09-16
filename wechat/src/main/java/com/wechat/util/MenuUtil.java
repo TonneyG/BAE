@@ -1,5 +1,8 @@
 package com.wechat.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.wechat.constants.Constants;
 import com.wechat.menu.Button;
 import com.wechat.menu.ClickButton;
@@ -10,37 +13,67 @@ import com.wechat.menu.ViewButton;
 import net.sf.json.JSONObject;
 
 public class MenuUtil {
-	public static void createMenu(){
-		String accessToken = SignUtil.getAccessToken();
+	private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
+	
+	/**
+	 * 
+	 * @param menu 菜单实例
+	 * @param accessToken 凭证
+	 * @return true 成功	false 失败
+	 */
+	public static boolean createMenu(Menu menu,String accessToken){
+		boolean flag = false;
 		String menuCreateUrl = Constants.CREATE_MENU_URL.replace("ACCESS_TOKEN", accessToken);
-		Menu menu = initMenu();
 		String jsonMenu = JSONObject.fromObject(menu).toString();
+		String result = HttpUtil.doPost(menuCreateUrl, jsonMenu);
+		JSONObject json = JSONObject.fromObject(result);
+		if(null != json){
+			int errorCode = json.getInt("errcode");
+			String errorMsg = json.getString("errmsg");
+			if(0 == errorCode){
+				flag = true;
+			}else{
+				flag = false;
+				log.error("创建菜单失败 errcode:{} errmsg:{}",errorCode,errorMsg);
+			}
+		}
+		return flag;
 	}
 	
-	public static Menu initMenu(){
-		ClickButton btn1 = new ClickButton();
-		btn1.setName("天气");
-		btn1.setKey("b_weather");
-		
-		ViewButton btn2 = new ViewButton();
-		
-		ClickButton btn31 = new ClickButton();
-		btn31.setName("赞一个");
-		btn31.setKey("b_praise");
-		
-		ClickButton btn32 = new ClickButton();
-		btn32.setName("热歌速递");
-		btn32.setKey("b_hot_top");
-		
-		ClickButton btn33 = new ClickButton();
-		btn33.setName("新歌驾到");
-		btn33.setKey("b_new_top");
-		
-		ComplexButton btn3 = new ComplexButton();
-		btn3.setName("音乐潮流榜");
-		btn3.setSub_button(new Button[]{btn31,btn32,btn33});
-		Menu menu = new Menu();
-		menu.setButton(new Button[]{btn1,btn3});
-		return menu;
+	/**
+	 * 查询菜单
+	 * @param accessToken
+	 * @return
+	 */
+	public static String getMenu(String accessToken){
+		String result = null;
+		String menuQueryUrl = Constants.QUERY_MENU_URL.replace("ACCESS_TOKEN", accessToken);
+		JSONObject json = JSONObject.fromObject(HttpUtil.doGet(menuQueryUrl));
+		if(null != json){
+			result = json.toString();
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除菜单
+	 * @param accessToken 凭证
+	 * @return true 成功	false 失败
+	 */
+	public static boolean deleteMenu(String accessToken){
+		boolean flag = false;
+		String menuDeleteUrl = Constants.DELETE_MENU_URL.replace("ACCESS_TOKEN", accessToken);
+		JSONObject json = JSONObject.fromObject(HttpUtil.doGet(menuDeleteUrl));
+		if(null != json){
+			int errorCode = json.getInt("errcode");
+			int errorMsg = json.getInt("errmsg");
+			if(0 == errorCode){
+				flag = true;
+			}else{
+				flag = false;
+				log.error("删除菜单失败 errcode:{} errmsg:{}",errorCode,errorMsg);
+			}
+		}
+		return flag;
 	}
 }

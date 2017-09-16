@@ -8,6 +8,7 @@ public class Constants {
 	public static String REQ_VIDEO_MESSAGE = "vodeo";
 	public static String REQ_LOCATION_MESSAGE = "location";
 	public static String REQ_LINK_MESSAGE = "link";
+	public static String REQ_EVENT = "event";
 	
 	//接受事件类型
 	public static String SUBSCRIBE_EVENT = "subscribe";

@@ -5,6 +5,7 @@ import com.wechat.menu.ClickButton;
 import com.wechat.menu.ComplexButton;
 import com.wechat.menu.Menu;
 import com.wechat.menu.ViewButton;
+import com.wechat.util.MenuUtil;
 
 import net.sf.json.JSONObject;
 

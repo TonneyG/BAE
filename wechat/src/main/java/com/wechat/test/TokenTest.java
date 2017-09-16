@@ -9,12 +9,14 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.CookieSpecs;
@@ -35,6 +37,7 @@ import org.junit.Test;
 
 import com.wechat.constants.Constants;
 import com.wechat.security.MyTrustManager;
+import com.wechat.util.HttpUtil;
 
 public class TokenTest {
 	private String APPID = "wx3a75093b38b272f7";
@@ -137,4 +140,21 @@ public class TokenTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void getAccessTokenByIOUtils(){
+		try {
+			long start = System.currentTimeMillis();
+			String requestUrl = Constants.ACCESS_TOKEN_URL.replace("APPID", APPID).replace("APPSECRET", APPSECRET);
+			URL url = new URL(requestUrl);
+			//System.out.println(IOUtils.toString(url, "utf-8"));
+			//关闭释放资源
+			List<String> list = IOUtils.readLines(url.openStream(), "utf-8");
+			long end = System.currentTimeMillis();
+			System.out.println(end-start);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
