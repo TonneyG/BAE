@@ -22,11 +22,25 @@ import com.wechat.util.SignUtil;
 import net.sf.json.JSONObject;
 
 public class CoreServlet extends HttpServlet{
+	private static CoreService coreService = null;
+	
+	public static void getInstance(){
+		if(coreService == null){
+			synchronized(CoreServlet.class){
+				if(coreService == null){
+					coreService = new CoreService();
+				}
+			}
+		}
+	}
+	
 	/**
 	 * 容器初始化
 	 */
 	@Override
 	public void init() throws ServletException {
+		getInstance();
+		coreService.initMenu();
 	}
 	
 	/**
@@ -56,7 +70,7 @@ public class CoreServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp){
 		try {
-			String respXml = CoreService.processRequest(req);
+			String respXml = coreService.processRequest(req);
 			PrintWriter out = resp.getWriter();
 			out.write(respXml);
 			out.close();
