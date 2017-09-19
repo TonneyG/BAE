@@ -1,5 +1,8 @@
 package com.wechat.test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.wechat.menu.Button;
 import com.wechat.menu.ClickButton;
 import com.wechat.menu.ComplexButton;
@@ -11,6 +14,9 @@ import net.sf.json.JSONObject;
 
 public class MenuTest {
 	public static void main(String[] args) {
+		Logger log = LoggerFactory.getLogger(MenuTest.class);
+		System.out.println(log);
+		
 		ClickButton btn1 = new ClickButton();
 		btn1.setName("天气");
 		btn1.setKey("b_weather");

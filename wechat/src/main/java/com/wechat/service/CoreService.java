@@ -30,7 +30,7 @@ public class CoreService {
 	private static String APPID = "wx3a75093b38b272f7";
 	private static String APPSECRET = "3b6366b1586986d06776516775a8e18b";
 	
-	public static String processRequest(HttpServletRequest request){
+	public String processRequest(HttpServletRequest request){
 		//XML格式的消息数据
 		String respXml = "";
 		//默认返回的文本消息内容
@@ -58,7 +58,9 @@ public class CoreService {
 				//TODO 处理图片消息请求
 			}else if(msgType.equals(Constants.REQ_VOICE_MESSAGE)){
 				String mediaId = map.get("MediaId");
-				String format = map.get("Format");
+				String format = map.get("Format");//语音格式:amr
+				String recognition = map.get("Recognition");//语音识别结果
+				
 				//TODO 处理语音消息请求
 			}else if(msgType.equals(Constants.REQ_VIDEO_MESSAGE)){
 				String mediaId = map.get("MediaId");
