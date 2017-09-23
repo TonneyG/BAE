@@ -3,14 +3,13 @@ package com.wechat.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wechat.constants.Constants;
 import com.wechat.menu.Button;
 import com.wechat.menu.ClickButton;
 import com.wechat.menu.ComplexButton;
 import com.wechat.menu.Menu;
 import com.wechat.menu.ViewButton;
-
-import net.sf.json.JSONObject;
 
 public class MenuUtil {
 	private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
@@ -24,12 +23,12 @@ public class MenuUtil {
 	public static boolean createMenu(Menu menu,String accessToken){
 		boolean flag = false;
 		String menuCreateUrl = Constants.CREATE_MENU_URL.replace("ACCESS_TOKEN", accessToken);
-		String jsonMenu = JSONObject.fromObject(menu).toString();
-		String result = HttpUtil.doPost(menuCreateUrl, jsonMenu);
-		JSONObject json = JSONObject.fromObject(result);
-		if(null != json){
-			int errorCode = json.getInt("errcode");
-			String errorMsg = json.getString("errmsg");
+		String jsonMenu = JSONObject.toJSONString(menu).toString();
+		JSONObject jsonObject = HttpUtil.doPost(menuCreateUrl, jsonMenu);
+		//net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(result);
+		if(null != jsonObject){
+			int errorCode = jsonObject.getIntValue("errcode");
+			String errorMsg = jsonObject.getString("errmsg");
 			if(0 == errorCode){
 				flag = true;
 			}else{
@@ -48,9 +47,10 @@ public class MenuUtil {
 	public static String getMenu(String accessToken){
 		String result = null;
 		String menuQueryUrl = Constants.QUERY_MENU_URL.replace("ACCESS_TOKEN", accessToken);
-		JSONObject json = JSONObject.fromObject(HttpUtil.doGet(menuQueryUrl));
-		if(null != json){
-			result = json.toString();
+		//JSONObject json = JSONObject.fromObject(HttpUtil.doGet(menuQueryUrl));
+		JSONObject jsonObject = HttpUtil.doGet(menuQueryUrl);
+		if(null != jsonObject){
+			result = jsonObject.toString();
 		}
 		return result;
 	}
@@ -63,10 +63,10 @@ public class MenuUtil {
 	public static boolean deleteMenu(String accessToken){
 		boolean flag = false;
 		String menuDeleteUrl = Constants.DELETE_MENU_URL.replace("ACCESS_TOKEN", accessToken);
-		JSONObject json = JSONObject.fromObject(HttpUtil.doGet(menuDeleteUrl));
-		if(null != json){
-			int errorCode = json.getInt("errcode");
-			int errorMsg = json.getInt("errmsg");
+		JSONObject jsonObject = HttpUtil.doGet(menuDeleteUrl);
+		if(null != jsonObject){
+			int errorCode = jsonObject.getIntValue("errcode");
+			int errorMsg = jsonObject.getIntValue("errmsg");
 			if(0 == errorCode){
 				flag = true;
 			}else{
