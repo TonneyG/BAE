@@ -14,6 +14,10 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
 public class HttpUtil {
 	private static String proxyHost = "222.221.152.148";
 	private static int proxyPort = 80;
@@ -35,11 +39,11 @@ public class HttpUtil {
 		}
 	}
 	
-	public static String doGet(String requestUrl){
+	public static JSONObject doGet(String requestUrl){
 		return doGet(requestUrl,null);
 	}
 	
-	public static String doGet(String requestUrl,Map<String,Object> paramMap){
+	public static JSONObject doGet(String requestUrl,Map<String,Object> paramMap){
 		try {
 			//拼接url参数
 			String paramStr = prepareParam(paramMap);
@@ -63,14 +67,14 @@ public class HttpUtil {
 			inputStreamReader.close();
 			inputStream.close();
 			conn.disconnect();
-			return sb.toString();
+			return stringToJson(sb.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public static String doPost(String requestUrl,Map<String,Object> paramMap){
+	public static JSONObject doPost(String requestUrl,Map<String,Object> paramMap){
 		try {
 			String paramStr = prepareParam(paramMap);
 			URL url = new URL(requestUrl);
@@ -95,14 +99,14 @@ public class HttpUtil {
 			inputStreamReader.close();
 			inputStream.close();
 			conn.disconnect();
-			return sb.toString();
+			return stringToJson(sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public static String doPost(String requestUrl,String paramStr){
+	public static JSONObject doPost(String requestUrl,String paramStr){
 		try {
 			URL url = new URL(requestUrl);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -126,14 +130,14 @@ public class HttpUtil {
 			inputStreamReader.close();
 			inputStream.close();
 			conn.disconnect();
-			return sb.toString();
+			return stringToJson(sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public static String doGetWithProxy(String requestUrl,Map<String,Object> paramMap){
+	public static JSONObject doGetWithProxy(String requestUrl,Map<String,Object> paramMap){
 		try {
 			//拼接url参数
 			String paramStr = prepareParam(paramMap);
@@ -161,14 +165,14 @@ public class HttpUtil {
 			inputStreamReader.close();
 			inputStream.close();
 			conn.disconnect();
-			return sb.toString();
+			return stringToJson(sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public static String doPostWithProxy(String requestUrl,Map<String,Object> paramMap){
+	public static JSONObject doPostWithProxy(String requestUrl,Map<String,Object> paramMap){
 		try {
 			//拼接url参数
 			String paramStr = prepareParam(paramMap);
@@ -198,10 +202,15 @@ public class HttpUtil {
 			inputStreamReader.close();
 			inputStream.close();
 			conn.disconnect();
-			return sb.toString();
+			return stringToJson(sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static JSONObject stringToJson(String content){
+		JSONObject jsonObject = JSONObject.parseObject(content);
+		return jsonObject;
 	}
 }

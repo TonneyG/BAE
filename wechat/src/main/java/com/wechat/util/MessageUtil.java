@@ -16,6 +16,8 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -30,8 +32,6 @@ import com.wechat.message.response.TextMessage;
 import com.wechat.message.response.VideoMessage;
 import com.wechat.message.response.VoiceMessage;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 public class MessageUtil {
 	private static Logger log = LoggerFactory.getLogger(MessageUtil.class);
@@ -160,7 +160,7 @@ public class MessageUtil {
 	
 	public static String makeMusicCustomMessage(String openId,Music music){
 		String jsonMsg = "{\"touser\":\"%s\",\"msgtype\":\"music\",\"music\":%s}}";
-		jsonMsg = String.format(jsonMsg, openId, JSONObject.fromObject(music).toString());
+		jsonMsg = String.format(jsonMsg, openId, JSON.toJSONString(music));
 		jsonMsg = jsonMsg.replace("musicUrl", "musicurl");
 		jsonMsg = jsonMsg.replace("HQMusicUrl", "hqmusicurl");
 		jsonMsg = jsonMsg.replace("thumbMediaId", "thumb_media_id");
@@ -169,7 +169,7 @@ public class MessageUtil {
 	
 	public static String makNewsCustomMessage(String openId,List<Article> articleList){
 		String jsonMsg = "{\"touser\":\"%s\",\"msgtype\":\"news\",\"news\":{\"articles\":%s}}";
-		String.format(jsonMsg, openId, JSONArray.fromObject(articleList).toString().replace("\"", "\\\""));
+		String.format(jsonMsg, openId, JSON.toJSONString(articleList).replace("\"", "\\\""));
 		jsonMsg = jsonMsg.replace("picUrl", "picurl");
 		return jsonMsg;
 	}
@@ -177,10 +177,11 @@ public class MessageUtil {
 	public static boolean sendCustomMessage(String accessToken,String jsonMsg){
 		boolean result = false;
 		String requestUrl = Constants.SEND_CUSTOMER_SERVICE_URL.replace("ACCESS_TOKEN", accessToken);
-		String json = HttpUtil.doPost(requestUrl, jsonMsg);
-		JSONObject jsonObject = JSONObject.fromObject(json);
+		/*String json = HttpUtil.doPost(requestUrl, jsonMsg);
+		JSONObject jsonObject = JSONObject.fromObject(json);*/
+		JSONObject jsonObject = HttpUtil.doPost(requestUrl, jsonMsg);
 		if(null != jsonObject){
-			int errorCode = jsonObject.getInt("errcode");
+			int errorCode = jsonObject.getIntValue("errcode");
 			String errorMsg = jsonObject.getString("errMsg");
 			if(0 == errorCode){
 				result = true;
