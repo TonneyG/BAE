@@ -209,6 +209,7 @@ public class HttpUtil {
 		return null;
 	}
 	
+	//特别的，如果使用json-lib如果使用getXXX方法获取的值为null，会抛出JSONException异常，而fastjson不会，所以对应判断逻辑需要改变
 	public static JSONObject stringToJson(String content){
 		JSONObject jsonObject = JSONObject.parseObject(content);
 		return jsonObject;

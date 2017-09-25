@@ -48,4 +48,9 @@ public class Constants {
 	//获取用户信息
 	public static String GET_USERINFO_URL = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 	
+	//创建ticket(	POST:临时和永久)
+	public static String CREATE_QRCODE_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN";
+	//通过ticket换取二维码(GET:TICKET记得进行UrlEncode )
+	public static String SHOW_QRCODE_URL = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET";
+
 }
