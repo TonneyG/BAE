@@ -84,7 +84,7 @@ public class WebUtil {
 	
 	public static SNSUserInfo getSNSUserInfo(String accessToken,String openId){
 		SNSUserInfo snsUserInfo = null;
-		String requestUrl = Constants.GET_USERINFO_URL.
+		String requestUrl = Constants.GET_SNSUSERINFO_URL.
 				replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
 		JSONObject jsonObject = HttpUtil.doGet(requestUrl);
 		if(null != jsonObject){
