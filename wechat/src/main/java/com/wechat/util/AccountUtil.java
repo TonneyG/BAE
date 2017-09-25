@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,17 +96,46 @@ public class AccountUtil {
 	
 	public static WeixinUserInfo getUserInfo(String accessToken,String openId){
 		WeixinUserInfo weixinUserInfo = null;
-		//String requestUrl = Constants.GET_USERINFO_URL;
-		return null;
+		String requestUrl = Constants.GET_USERINFO_URL.replace("ACCESS_TOKEN", accessToken).replace("OPENID",openId);
+		JSONObject jsonObject = HttpUtil.doGet(requestUrl);
+		if(null != jsonObject){
+			if(!jsonObject.containsKey("errcode")){
+				weixinUserInfo = new WeixinUserInfo();
+				weixinUserInfo.setSubscribe(jsonObject.getIntValue("subscribe"));
+				weixinUserInfo.setOpenid(jsonObject.getString("openid"));
+				weixinUserInfo.setNickname(jsonObject.getString("nickname"));
+				weixinUserInfo.setSex(jsonObject.getIntValue("sex"));
+				weixinUserInfo.setLanguage(jsonObject.getString("language"));
+				weixinUserInfo.setCity(jsonObject.getString("city"));
+				weixinUserInfo.setProvince(jsonObject.getString("province"));
+				weixinUserInfo.setCountry(jsonObject.getString("country"));
+				weixinUserInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
+				weixinUserInfo.setSubscribeTime(jsonObject.getString("subscribe_time"));
+				weixinUserInfo.setUnionid(jsonObject.getString("unionid"));
+				weixinUserInfo.setRemark(jsonObject.getString("remark"));
+				weixinUserInfo.setGroupid(jsonObject.getString("groupid"));
+				weixinUserInfo.setTagidList(jsonObject.getJSONArray("tagid_list").toJavaList(String.class));
+			}else{
+				int errorCode = jsonObject.getIntValue("errcode");
+				String errorMsg = jsonObject.getString("errmsg");
+				log.error("获取用户基本信息失败,errorCode: {},errorMsg: {}",errorCode,errorMsg);
+			}
+		}
+		return weixinUserInfo;
 	}
 	
 	public static void main(String[] args) {
 		try{
-			Token token = CommonUtil.getAccessToken(APPID_test, APPSECRET_test);
-			WeixinQRCode weixinQRCode = createTemporaryQRCode(token.getAccessToken(),1800,123);
+			//Token token = CommonUtil.getAccessToken(APPID_test, APPSECRET_test);
+			//WeixinQRCode weixinQRCode = createTemporaryQRCode(token.getAccessToken(),1800,123);
 			//String ticket = createPermanentQRCode(token.getAccessToken(),123);
 			//System.out.println(ticket);
-			
+			String json = "{\"tagid_list\":[128,2]}";
+			JSONObject jsonObject = JSONObject.parseObject(json);
+			Object[] objs = jsonObject.getJSONArray("tagid_list").toArray();
+			List<String> list = jsonObject.getJSONArray("tagid_list").toJavaList(String.class);
+			System.out.println(objs);
+			System.out.println(list);
 		}catch(net.sf.json.JSONException e){
 			System.out.println("出错了");
 		}
