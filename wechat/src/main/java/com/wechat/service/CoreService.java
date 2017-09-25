@@ -88,6 +88,11 @@ public class CoreService {
 				}else if(eventType.equals(Constants.SUBSCRIBE_EVENT)){
 					textMessage.setContent("您好，欢迎关注我是大歌星！我们致力于为每一位用户提供满意的体验！");
 					MessageUtil.messageToXml(textMessage);
+				}else if(eventType.equals(Constants.LOCATION_EVENT)){
+					String latitude = map.get("Latitude");
+					String longitude = map.get("Longitude");
+					String precision = map.get("Precision");
+					//TODO 处理用户地理事件
 				}
 			}
 		} catch (Exception e) {

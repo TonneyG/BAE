@@ -1,7 +1,9 @@
 package com.wechat.util;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +106,16 @@ public class WebUtil {
 			}
 		}
 		return null;
+	}
+	
+	public static String urlEncodeUTF8(String source){
+		String result = "";
+		try {
+			result = URLEncoder.encode(source, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	public static void main(String[] args) throws Exception {

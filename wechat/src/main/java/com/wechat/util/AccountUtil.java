@@ -1,0 +1,113 @@
+package com.wechat.util;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONObject;
+import com.wechat.account.WeixinQRCode;
+import com.wechat.account.WeixinUserInfo;
+import com.wechat.constants.Constants;
+import com.wechat.message.response.Token;
+
+public class AccountUtil {
+	private static String APPID_test = "wxb92d0e4892297c19";
+	private static String APPSECRET_test = "104cde607373053e243623aa9b530fc0";
+	private static Logger log = LoggerFactory.getLogger(AccountUtil.class);
+	
+	public static WeixinQRCode createTemporaryQRCode(String accessToken,int expireSeconds,int sceneId){
+		WeixinQRCode weixinQRCode = null;
+		String requestUrl = Constants.CREATE_QRCODE_TICKET_URL.replace("TOKEN", accessToken);
+		String jsonMsg = "{\"expire_seconds\": %d, \"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": %d}}}";
+		JSONObject jsonObject = HttpUtil.doPost(requestUrl, String.format(jsonMsg, expireSeconds, sceneId));
+		if(null != jsonObject){
+			if(!jsonObject.containsKey("errcode")){
+				weixinQRCode = new WeixinQRCode();
+				weixinQRCode.setTicket(jsonObject.getString("ticket"));
+				weixinQRCode.setExpireSeconds(jsonObject.getIntValue("expire_seconds"));
+				log.info("创建临时带参二维码成功 ticket:{} expire_seconds:{}",weixinQRCode.getTicket(),weixinQRCode.getExpireSeconds());
+			}else{
+				weixinQRCode = null;
+				int errorCode = jsonObject.getIntValue("errcode");
+				String errorMsg = jsonObject.getString("errmsg");
+				log.error("创建临时带参二维码失败 errcode:{} errmsg:{}",errorCode,errorMsg);
+			}
+		}
+		return weixinQRCode;
+	}
+	
+	public static String createPermanentQRCode(String accessToken,int sceneId){
+		String ticket = null;
+		String requestUrl = Constants.CREATE_QRCODE_TICKET_URL.replace("TOKEN", accessToken);
+		String jsonMsg = "{\"action_name\": \"QR_LIMIT_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": %d}}}";
+		JSONObject jsonObject = HttpUtil.doPost(requestUrl, String.format(jsonMsg, sceneId));
+		if(jsonObject!=null){
+			if(!jsonObject.containsKey("errcode")){
+				ticket = jsonObject.getString("ticket");
+				log.info("创建永久带参数二维码成功 ticket:{}",ticket);
+			}else{
+				int errorCode = jsonObject.getIntValue("errcode");
+				String errorMsg = jsonObject.getString("errmsg");
+				log.error("创建永久带参数二维码失败 errcode:{} errmsg:{}",errorCode,errorMsg);
+			}
+		}
+		return ticket;
+	}
+	
+	public static String getQRCode(String ticket,String savePath){
+		String filePath = null;
+		String requestUrl = Constants.SHOW_QRCODE_URL.replace("TICKET", ticket);
+		try {
+			URL url = new URL(requestUrl);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoInput(true);
+			conn.setRequestMethod("GET");
+			
+			if(!savePath.endsWith("/")){
+				savePath += "/";
+			}
+			//将ticket作为文件名
+			filePath = savePath+ticket+".jpg";
+			BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+			FileOutputStream fos = new FileOutputStream(new File(filePath));
+			byte[] buf = new byte[8096];
+			int size = 0;
+			while((size=bis.read(buf)) != -1){
+				fos.write(buf, 0, size);
+			}
+			fos.close();
+			bis.close();
+			conn.disconnect();
+			log.info("根据ticket换取二维码成功, filePath="+filePath);
+		} catch (Exception e) {
+			filePath = null;
+			log.error("根据ticket换取二维码失败: {}",e);
+		}
+		return filePath;
+	}
+	
+	public static WeixinUserInfo getUserInfo(String accessToken,String openId){
+		WeixinUserInfo weixinUserInfo = null;
+		//String requestUrl = Constants.GET_USERINFO_URL;
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		try{
+			Token token = CommonUtil.getAccessToken(APPID_test, APPSECRET_test);
+			WeixinQRCode weixinQRCode = createTemporaryQRCode(token.getAccessToken(),1800,123);
+			//String ticket = createPermanentQRCode(token.getAccessToken(),123);
+			//System.out.println(ticket);
+			
+		}catch(net.sf.json.JSONException e){
+			System.out.println("出错了");
+		}
+	}
+}
