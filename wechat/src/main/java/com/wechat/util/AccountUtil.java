@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONObject;
 import com.wechat.account.WeixinQRCode;
 import com.wechat.account.WeixinUserInfo;
+import com.wechat.account.WeixinUserList;
 import com.wechat.constants.Constants;
 import com.wechat.message.response.Token;
 
@@ -122,6 +123,29 @@ public class AccountUtil {
 			}
 		}
 		return weixinUserInfo;
+	}
+	
+	public static WeixinUserList getUserList(String accessToken,String nextOpenId){
+		WeixinUserList weixinUserList = null;
+		if(null == nextOpenId){
+			nextOpenId = "";
+		}
+		String requestUrl = Constants.GET_USERS_URL.replace("ACCESS_TOKEN", accessToken).replace("NEXT_OPENID", nextOpenId);
+		JSONObject jsonObject = HttpUtil.doGet(requestUrl);
+		if(null != jsonObject){
+			if(!jsonObject.containsKey("errcode")){
+				weixinUserList = new WeixinUserList();
+				weixinUserList.setTotal(jsonObject.getIntValue("total"));
+				weixinUserList.setCount(jsonObject.getIntValue("count"));
+				weixinUserList.setOpenIdList(jsonObject.getJSONArray("data").toJavaList(String.class));
+				weixinUserList.setNextOpenId(jsonObject.getString("next_openid"));
+			}else{
+				int errorCode = jsonObject.getIntValue("errcode");
+				String errorMsg = jsonObject.getString("errmsg");
+				log.error("获取关注者列表失败:errcode:{} errmsg:{}",errorCode,errorMsg);
+			}
+		}
+		return weixinUserList;
 	}
 	
 	public static void main(String[] args) {
