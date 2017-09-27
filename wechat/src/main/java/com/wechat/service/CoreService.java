@@ -141,4 +141,12 @@ public class CoreService {
 		return menu;
 	}
 	
+	/**
+	 * 得到包含指定Unicode代码点的字符串
+	 * @param codePoint
+	 * @return
+	 */
+	private static String emoji(int codePoint){
+		return String.valueOf(Character.toChars(codePoint));
+	}
 }

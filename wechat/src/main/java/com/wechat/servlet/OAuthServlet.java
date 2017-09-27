@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.wechat.ouath2.SNSUserInfo;
-import com.wechat.ouath2.WeixinOauth2Token;
 import com.wechat.util.CommonUtil;
-import com.wechat.util.WebUtil;
+import com.wechat.advance.ouath2.SNSUserInfo;
+import com.wechat.advance.ouath2.WeixinOauth2Token;
+import com.wechat.util.AdvanceUtil;
 
 public class OAuthServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
@@ -27,11 +27,11 @@ public class OAuthServlet extends HttpServlet{
 		/*if(!"authdeny".equals(code)){
 			
 		}*/
-		WeixinOauth2Token weixinOauth2Token = WebUtil.getOauth2AccessToken("APPID", "APPSECRET", code);
+		WeixinOauth2Token weixinOauth2Token = AdvanceUtil.getOauth2AccessToken("APPID", "APPSECRET", code);
 		String accessToken = weixinOauth2Token.getAccessToken();
 		String openId = weixinOauth2Token.getOpenId();
 		//获取用户信息
-		SNSUserInfo snsUserInfo = WebUtil.getSNSUserInfo(accessToken, openId);
+		SNSUserInfo snsUserInfo = AdvanceUtil.getSNSUserInfo(accessToken, openId);
 		
 	}
 }
