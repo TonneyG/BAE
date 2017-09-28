@@ -60,4 +60,33 @@ public class Constants {
 	public static String GET_MEDIAID_URL = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
 	//下载多媒体文件(GET)
 	public static String DOWNLOAD_MEDIA_URL = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
+
+	
+	//百度地图Place API使用
+	//place区域检索POI服务
+	public static String SEARCH_POI_URL = "http://api.map.baidu.com/place/v2/search";
+	//POI详细服务
+	public static String POI_DETAIL_URL = "http://api.map.baidu.com/place/v2/detail";
+	//百度坐标系转换
+	/**
+	 * 传递参数：
+	 * x:经度
+	 * y：纬度
+	 * from：参数x、y的坐标系,0表示WGS-84坐标系,2表示GCJ-02坐标系
+	 * to：目标坐标系,目前只支持百度坐标系,值为4
+	 * mode：转换模式,值为1表示批量转换;值为空或其他值,表示单个转换
+	 * 
+	 * 返回参数：
+	 * error：错误代码，0表示成功
+	 * x：经Base64算法编码后的经度
+	 * y：经Base64算法编码后的纬度
+	 */
+	public static String BAIDU_MAP_CONVERT_URL = "http://api.map.baidu.com/ag/coord/convert?x=X&y=Y&from=FROM&to=4&mode=MODE";
+	
+	/**
+	 * coords:源坐标.格式:x1,y1;x2,y2
+	 * ak:开发者密钥
+	 */
+	public static String BAIDU_MAP_CONVERT2_URL = "http://api.map.baidu.com/geoconv/v1/?";
+
 }
