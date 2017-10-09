@@ -28,8 +28,8 @@ public class AccountUtil {
 	public static WeixinQRCode createTemporaryQRCode(String accessToken,int expireSeconds,int sceneId){
 		WeixinQRCode weixinQRCode = null;
 		String requestUrl = Constants.CREATE_QRCODE_TICKET_URL.replace("TOKEN", accessToken);
-		String jsonMsg = "{\"expire_seconds\": %d, \"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": %d}}}";
-		JSONObject jsonObject = HttpUtil.doPost(requestUrl, String.format(jsonMsg, expireSeconds, sceneId));
+		String jsonMsg = "{\"expire_seconds\": %d, \"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": }}}";
+		JSONObject jsonObject = HttpUtil.doPost(requestUrl, String.format(jsonMsg, expireSeconds));
 		if(null != jsonObject){
 			if(!jsonObject.containsKey("errcode")){
 				weixinQRCode = new WeixinQRCode();
@@ -149,32 +149,32 @@ public class AccountUtil {
 		return weixinUserList;
 	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		try{
-			//Token token = CommonUtil.getAccessToken(APPID_test, APPSECRET_test);
-			//WeixinQRCode weixinQRCode = createTemporaryQRCode(token.getAccessToken(),1800,123);
+			Token token = CommonUtil.getAccessToken(APPID_test, APPSECRET_test);
+			WeixinQRCode weixinQRCode = createTemporaryQRCode(token.getAccessToken(),1800,-1);
 			//String ticket = createPermanentQRCode(token.getAccessToken(),123);
-			//System.out.println(ticket);
-			String json = "{\"tagid_list\":[128,2]}";
+			System.out.println(weixinQRCode.getTicket());
+			/*String json = "{\"tagid_list\":[128,2]}";
 			JSONObject jsonObject = JSONObject.parseObject(json);
 			Object[] objs = jsonObject.getJSONArray("tagid_list").toArray();
 			List<String> list = jsonObject.getJSONArray("tagid_list").toJavaList(String.class);
 			System.out.println(objs);
-			System.out.println(list);
+			System.out.println(list);*/
 		}catch(net.sf.json.JSONException e){
 			System.out.println("出错了");
 		}
-	}*/
+	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Token token = CommonUtil.getAccessToken(APPID_test, APPSECRET_test);
-		/*WeixinMedia weixinMedia = AdvanceUtil.uploadMedia(token.getAccessToken(),"image","http://localhost:8080/wechat/img/timg.jpg");
+		WeixinMedia weixinMedia = AdvanceUtil.uploadMedia(token.getAccessToken(),"image","http://localhost:8080/wechat/img/timg.jpg");
 		System.out.println(token.getAccessToken());
 		System.out.println(weixinMedia.getMediaId());
 		System.out.println(weixinMedia.getType());
-		System.out.println(weixinMedia.getCreatedAt());*/
+		System.out.println(weixinMedia.getCreatedAt());
 		
 		String path = AdvanceUtil.getMedia("-xHzMc2pkc9jPflxTIWNhnA02isN_sQ8tvMnlYR8wSJwhLKbvWAcVhQH75jjrdw8R0ZkPiTzfqQW92U6YWu5ekoB8A-poVgcKY47a3XRcH67Y9EDGcwUFm-TeGy3cqX_KBMhAGAPGR", "Ky3b9IjZJzjE7V4YeChC7sIVF_3j3Jbjg63MR7xV5hY43j4aJXrq0YNV8Wad0FbJ", "D:/");
 		System.out.println(path);
-	}
+	}*/
 }

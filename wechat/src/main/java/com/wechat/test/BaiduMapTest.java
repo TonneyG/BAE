@@ -67,4 +67,21 @@ public class BaiduMapTest {
 		long end = System.currentTimeMillis();
 		System.out.println(end-start);
 	}
+	
+	@Test
+	public void coordConvert4() throws Exception{
+		String coords = "118.886131,32.088369";
+		String ak = "DMCG9BVjnTvgC1DyVtpz9W2hf09vHefc";
+		String requestUrl = Constants.BAIDU_MAP_CONVERT2_URL.
+				replace("${COORDS}", coords).replace("${FROM}", "3").
+				replace("${to}", "5").replace("${ak}", ak);
+		JSONObject jsonObject = HttpUtil.doGet(requestUrl);
+		System.out.println(jsonObject.toJSONString());
+		long start = System.currentTimeMillis();
+		for(int i=0;i<1000;i++){
+			String new_x = new String(Base64.decode(jsonObject.getString("x")));
+		}
+		long end = System.currentTimeMillis();
+		System.out.println(end-start);
+	}
 }

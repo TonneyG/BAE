@@ -60,7 +60,6 @@ public class CoreService {
 				String mediaId = map.get("MediaId");
 				String format = map.get("Format");//语音格式:amr
 				String recognition = map.get("Recognition");//语音识别结果
-				
 				//TODO 处理语音消息请求
 			}else if(msgType.equals(Constants.REQ_VIDEO_MESSAGE)){
 				String mediaId = map.get("MediaId");

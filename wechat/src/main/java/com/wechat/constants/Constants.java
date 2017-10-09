@@ -87,6 +87,5 @@ public class Constants {
 	 * coords:源坐标.格式:x1,y1;x2,y2
 	 * ak:开发者密钥
 	 */
-	public static String BAIDU_MAP_CONVERT2_URL = "http://api.map.baidu.com/geoconv/v1/?";
-
+	public static String BAIDU_MAP_CONVERT2_URL = "http://api.map.baidu.com/geoconv/v1/?coords=${COORDS}&from=${FROM}&to=${to}&ak=${ak}";
 }
