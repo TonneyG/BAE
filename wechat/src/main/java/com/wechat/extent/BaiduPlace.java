@@ -1,6 +1,8 @@
 package com.wechat.extent;
 
-public class BaiduPlace {
+import java.util.Comparator;
+
+public class BaiduPlace implements Comparable<BaiduPlace>{
 	//名称
 	private String name;
 	//详细地址
@@ -49,4 +51,14 @@ public class BaiduPlace {
 	public void setDistance(int distance) {
 		this.distance = distance;
 	}
+	
+	@Override
+	public int compareTo(BaiduPlace o) {
+		return this.distance-o.getDistance();
+	}
+	//implements Comparator
+	/*@Override
+	public int compare(BaiduPlace o1, BaiduPlace o2) {
+		return o1.getDistance()-o2.getDistance();
+	}*/
 }

@@ -28,7 +28,7 @@ public class HttpUtil {
 			return "";
 		}else{
 			for(String key : paramMap.keySet()){
-				String value = (String) paramMap.get(key);
+				String value = paramMap.get(key).toString();
 				if(sb.length()<1){
 					sb.append(key).append("=").append(value);
 				}else{
@@ -43,12 +43,43 @@ public class HttpUtil {
 		return doGet(requestUrl,null);
 	}
 	
+	public static String doGet_Original(String requestUrl,Map<String,Object> paramMap){
+		try {
+			//拼接url参数
+			String paramStr = prepareParam(paramMap);
+			if(paramStr != null && paramStr.trim().length()>0){
+				requestUrl += "?"+paramStr;
+			}
+			URL url = new URL(requestUrl);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Content-Type", "text/html;charset=UTF-8");
+			InputStream inputStream = conn.getInputStream();
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"utf-8");
+			BufferedReader br = new BufferedReader(inputStreamReader);
+			StringBuffer sb = new StringBuffer();
+			String str = "";
+			while((str = br.readLine())!=null){
+				sb.append(str);
+			}
+			//关闭、释放资源
+			br.close();
+			inputStreamReader.close();
+			inputStream.close();
+			conn.disconnect();
+			return sb.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static JSONObject doGet(String requestUrl,Map<String,Object> paramMap){
 		try {
 			//拼接url参数
 			String paramStr = prepareParam(paramMap);
 			if(paramStr != null && paramStr.trim().length()>0){
-				requestUrl = "?"+paramStr;
+				requestUrl += "?"+paramStr;
 			}
 			URL url = new URL(requestUrl);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -142,7 +173,7 @@ public class HttpUtil {
 			//拼接url参数
 			String paramStr = prepareParam(paramMap);
 			if(paramStr != null && paramStr.trim().length()>0){
-				requestUrl = "?"+paramStr;
+				requestUrl += "?"+paramStr;
 			}
 			URL url = new URL(requestUrl);
 			//创建代理服务器
@@ -214,4 +245,5 @@ public class HttpUtil {
 		JSONObject jsonObject = JSONObject.parseObject(content);
 		return jsonObject;
 	}
+	
 }
