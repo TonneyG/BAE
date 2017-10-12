@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns='http://www.ehcache.org/v3'
+    xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+<!-- 声明Cache别名foo,并设置键值对类型(如果没有指定默认为java.lang.Object类型),在堆中的容量为2000,堆栈内存为500MB -->
+<cache alias="foo">
+	<key-type>java.lang.String</key-type>
+	<value-type>java.lang.String</value-type>
+	<resources>
+		<heap unit="entries">2000</heap>
+		<offheap unit="MB">500</offheap>
+	</resources>
+</cache>
+
+<!-- 抽象配置,cache可在此基础上扩展 -->
+<cache-template name="myDefaults">
+	<key-type>java.lang.Long</key-type>
+	<value-type>java.lang.String</value-type>
+	<heap unit="entries">200</heap>
+</cache-template>
+
+<!-- 覆盖cache-template的keyType -->
+<cache alias="bar" uses-template="myDefaults">
+	<key-type>java.lang.Number</key-type>
+</cache>
+
+<cache alias="simpleCache" uses-template="myDefaults"/>
+
+</config>
