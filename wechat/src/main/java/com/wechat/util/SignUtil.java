@@ -58,5 +58,4 @@ public class SignUtil {
 		String s = new String(tempArr);
 		return s;
 	}
-	
 }
