@@ -102,8 +102,6 @@
 	    <version>1.0.0</version>
 	</dependency>
 	
-<<<<<<< HEAD
-=======
 	<dependency>
 	    <groupId>org.apache.lucene</groupId>
 	    <artifactId>lucene-core</artifactId>
@@ -128,7 +126,6 @@
 	    <version>2012_u6</version>
 	</dependency>
 	
->>>>>>> 737691712e2c8914692b52686c5592aa789850d4
   </dependencies>
   <build>
     <finalName>wechat</finalName>
