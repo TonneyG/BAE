@@ -2,6 +2,7 @@ package com.wechat.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -9,16 +10,40 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 public class LuceneTest {
-	private String indexDir = "E:/Search Engines/Lucene/Index repository";
+	private String indexDir;
 	private String fieldName = "content";
+	private IndexReader indexReader;
+	
+	public void initParam(){
+		try {
+			Properties prop = new Properties();
+			prop.load(this.getClass().getResourceAsStream("/env.properties"));
+			String osName = System.getProperty("os.name");
+			if(osName.equals("Windows 8")){
+				indexDir = prop.getProperty("indexDir_win8");
+			}else if(osName.equals("Windows 7")){
+				indexDir = prop.getProperty("indexDir_win7");
+			}
+			System.out.println(indexDir);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void createIndex(Analyzer analyzer) throws IOException{
 		String[] array = {
@@ -38,9 +63,49 @@ public class LuceneTest {
 		directory.close();
 	}
 	
-	public void search(Analyzer analyzer,String key){
-		DirectoryReader ireader = DirectoryReader.open(directory);
-		
+	public IndexSearcher getIndexSearcher(){
+		try {
+			Directory directory = FSDirectory.open(new File(indexDir));
+			if(indexReader == null){
+				indexReader = DirectoryReader.open(directory); 
+			}else{
+				IndexReader newReader = DirectoryReader.openIfChanged((DirectoryReader) indexReader);
+				if(newReader != null){
+					indexReader.close();
+					indexReader = newReader;
+				}
+			}
+			IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+			return indexSearcher;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void searchIndex(String sentence,Analyzer analyzer){
+		try {
+			Directory directory = FSDirectory.open(new File(indexDir));
+			//IndexReader reader = IndexReader.open(directory);
+			IndexSearcher searcher = getIndexSearcher();
+			QueryParser parser = new QueryParser(Version.LUCENE_47,fieldName,analyzer);
+			Query query = parser.parse(sentence);
+			System.out.println("查询语句："+query.toString());
+			TopDocs topDocs = searcher.search(query, 10);
+			ScoreDoc[] scoreDoc = topDocs.scoreDocs;
+			System.out.println("共索引到 "+topDocs.totalHits+" 条匹配结果");
+			for(ScoreDoc sd : scoreDoc){
+				//根据id获取document
+				Document d = searcher.doc(sd.doc);
+				System.out.println(d.get(fieldName)+" score:"+sd.score);
+				//查看文档得分解析
+				System.out.println(searcher.explain(query, sd.doc));
+			}
+			indexReader.close();
+			directory.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void deleteFile(File file){
@@ -51,5 +116,14 @@ public class LuceneTest {
 			}
 		}
 		file.delete();
+	}
+	
+	public static void main(String[] args) {
+		Properties props = System.getProperties();
+		System.out.println(props.getProperty("os.name"));
+		System.out.println(System.getProperty("os.arch"));
+		System.out.println(System.getProperty("user.name"));
+		LuceneTest lt = new LuceneTest();
+		lt.initParam();
 	}
 }
