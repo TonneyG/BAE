@@ -25,5 +25,4 @@
 </cache>
 
 <cache alias="simpleCache" uses-template="myDefaults"/>
-
 </config>

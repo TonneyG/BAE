@@ -11,9 +11,9 @@ public class JDBCTest {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String url = "jdbc:mysql://localhost:3306/wechat_lbs";
+		String url = "jdbc:mysql://localhost:3306/wechat";
 		String username = "root";
-		String password = "";
+		String password = "root";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(url,username,password);
