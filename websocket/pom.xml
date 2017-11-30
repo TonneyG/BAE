@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.suning</groupId>
+  <artifactId>websocket</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>websocket</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+    	<groupId>javax</groupId>
+    	<artifactId>javaee-api</artifactId>
+    	<version>7.0</version>
+    	<scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+	    <groupId>com.alibaba</groupId>
+	    <artifactId>fastjson</artifactId>
+	    <version>1.2.31</version>
+	</dependency>
+  </dependencies>
+  
+  <build>
+    <finalName>websocket</finalName>
+    <plugins>
+      <plugin>
+          <!-- 3个可用插件 -->
+      	<!-- <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat6-maven-plugin</artifactId> -->                    <!-- 命令为tomcat6:redeploy -->
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>    <!-- 命令为tomcat7:redeploy -->
+      	<version>2.1</version>
+      <configuration>
+          <!-- <url>http://localhost:8080/manager</url> -->            <!-- tomcat6部署管理路径 -->
+          <url>http://localhost:8080/manager/text</url>                <!-- tomcat7部署管理路径 -->
+         <!-- <username>admin</username>                                tomcat的管理员账号
+          <password>admin</password> -->
+          <server>tomcat7</server>
+          <port>8080</port>
+          <path>/websocket</path>                            <!-- 部署路径 -->
+          <!-- <charset>UTF-8</charset>
+          <encoding>UTF-8</encoding> -->
+      </configuration>
+      </plugin>
+      
+      <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<configuration>
+			<source>1.7</source>
+			<target>1.7</target>
+		</configuration>
+	</plugin>
+  </plugins>
+  </build>
+</project>
+
